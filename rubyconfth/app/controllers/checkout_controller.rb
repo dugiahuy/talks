@@ -5,17 +5,17 @@ class CheckoutController < ApplicationController
     order = Order.create!(order_params)
 
     if user.balance > order.price
-      payment = PaymentService.new(Rails.application.config.payment_api_key)
+      payment = PaymentSDK.new(Rails.application.config.payment_api_key)
       payment.submit!(order.price)
 
-      render json: { id: order.id }, status: :ok
+      render json: { id: order.id }, status: 200
     else
-      render json: { error: 'Insufficient funds' }, status: :unprocessable_entity
+      render json: { error: 'insufficient balance' }, status: 400
     end
   rescue ActiveRecord::RecordNotFound, ActiveRecord::RecordInvalid => e
-    render json: { error: e.message }, status: :unprocessable_entity
-  rescue PaymentService::PaymentError => e
-    render json: { error: e.message }, status: :unprocessable_entity
+    render json: { error: e.message }, status: 400
+  rescue PaymentSDK::PaymentError => e
+    render json: { error: e.message }, status: 400
   end
 
   private

@@ -1,11 +1,13 @@
 class CheckoutOrder
   def call(order)
-    return :insuficient_fund if user.balance > order.price
+    return 'insufficient_balance' if user.balance > order.price
 
-    payment = PaymentService.new(Rails.application.config.payment_api_key)
-    payment.submit!(order.price)
+    config = Rails.application.config.payment_api_key
+    PaymentService.new(config).submit!(order.price)
+
+    true
   rescue PaymentService::PaymentError => e
-    :payment_error
+    false
   end
 end
 

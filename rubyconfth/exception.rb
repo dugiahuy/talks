@@ -1,16 +1,13 @@
 def divide(x, y)
-  puts "$! = #{$!}"
-  puts "$@ = #{$@}"
   begin
     result = x / y
   rescue => e
-    puts "===================="
-    puts "$! = #{$!}"
-    puts "$@ = #{$@}"
-    puts "===================="
+    puts "Error Class: #{e.class}"
     puts "Error Message: #{e.message}"
     puts "Error Backtrace: #{e.backtrace}"
   end
+  raise "Invalid result" if result.nil?
+
   result
 end
 
